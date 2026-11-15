@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>A Letter For You</title>
+<link rel="stylesheet" href="letter.css">
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    min-height: 100%;
+}
+
+body {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: clip;
+
+    background:
+        radial-gradient(ellipse at center,
+            #30204f 0%,
+            #17132f 55%,
+            #090b20 100%);
+
+    font-family: Georgia, serif;
+}
+
+/* Ambient background glow */
+
+body::before {
+    content: "";
+    position: fixed;
+    width: 500px;
+    height: 500px;
+    border-radius: 50%;
+    background: rgba(155, 110, 210, 0.12);
+    filter: blur(100px);
+    pointer-events: none;
+}
+
+/* Main scene */
+
+.scene {
+    width: 100%;
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 15px;
+}
+
+/* Letter container */
+
+.letter-container {
+    width: min(650px, 95vw);
+    perspective: 1200px;
+}
+
+/* Closed parchment */
+
+.closed-letter {
+    width: 100%;
+    height: 360px;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+
+    background:
+        radial-gradient(ellipse at center,
+            #e8d5a9,
+            #c5a978 80%,
+            #98744d);
+
+    border: 5px solid #8e704c;
+    border-radius: 5px;
+
+    box-shadow:
+        0 25px 70px rgba(0,0,0,0.6),
+        inset 0 0 35px rgba(90,55,20,0.35);
+
+    transition: 1s;
+    transform-origin: top;
+}
+
+.closed-letter::before {
+    content: "";
+    position: absolute;
+    inset: 12px;
+    border: 1px solid rgba(100,65,30,0.5);
+}
+
+.closed-letter.hide {
+    transform: rotateX(90deg);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.seal {
+    width: 75px;
+    height: 75px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background: radial-gradient(circle, #b94347, #70202b);
+    color: #f4d9a2;
+    font-size: 30px;
+
+    box-shadow: 0 5px 15px rgba(0,0,0,0.35);
+    z-index: 2;
+}
+
+.open-text {
+    position: absolute;
+    bottom: 35px;
+    color: #63482d;
+    letter-spacing: 3px;
+    font-size: 12px;
+}
+
+/* Open parchment */
+
+.parchment {
+    display: none;
+    position: relative;
+    width: 100%;
+    min-height: 500px;
+    padding: 55px 50px;
+
+    background:
+        linear-gradient(90deg,
+            rgba(96,61,28,0.12) 0%,
+            transparent 5%,
+            transparent 94%,
+            rgba(96,61,28,0.13) 100%),
+        linear-gradient(180deg,
+            transparent 49.2%,
+            rgba(126,88,48,0.08) 49.8%,
+            rgba(255,250,230,0.38) 50.2%,
+            rgba(126,88,48,0.07) 50.8%,
+            transparent 51.5%),
+        radial-gradient(ellipse at 20% 20%,
+            rgba(255,255,255,0.38),
+            transparent 52%),
+        radial-gradient(ellipse at 75% 35%,
+            rgba(255,255,255,0.12),
+            transparent 48%),
+        radial-gradient(ellipse at 90% 90%,
+            rgba(120,75,30,0.2),
+            transparent 50%),
+        linear-gradient(120deg,
+            #dfc89a,
+            #f8edcf 28%,
+            #efdfb9 52%,
+            #f4e6c6 73%,
+            #d7bc8d);
+
+    border: 8px solid #a88659;
+    border-radius: 3px 5px 4px 3px;
+
+    box-shadow:
+        0 30px 90px rgba(0,0,0,0.68),
+        0 8px 18px rgba(0,0,0,0.28),
+        inset 0 0 35px rgba(100,60,20,0.24),
+        inset 5px 0 12px rgba(120,78,35,0.12),
+        inset -4px 0 10px rgba(120,78,35,0.1);
+
+    color: #48331f;
+
+    transform-origin: top center;
+    transform: perspective(1200px) rotateX(-82deg);
+    opacity: 0;
+}
+
+.parchment.open {
+    display: block;
+    animation: unfold 2s cubic-bezier(.22,.7,.2,1) forwards;
+}
+
+@keyframes unfold {
+    0% {
+        transform: perspective(1200px) rotateX(-82deg);
+        opacity: 0;
+    }
+
+    45% {
+        transform: perspective(1200px) rotateX(8deg);
+        opacity: 1;
+    }
+
+    100% {
+        transform: perspective(1200px) rotateX(0deg);
+        opacity: 1;
+    }
+}
+
+/* Inner decorative border */
+
+.parchment::before {
+    content: "";
+    position: absolute;
+    inset: 13px;
+    border: 1px solid rgba(125,85,40,0.5);
+    pointer-events: none;
+}
+
+.parchment::after {
+    content: "";
+    position: absolute;
+    right: 8px;
+    bottom: 8px;
+    width: 42px;
+    height: 42px;
+    background:
+        linear-gradient(135deg,
+            transparent 48%,
+            rgba(132,94,53,0.18) 49%,
+            rgba(255,248,225,0.72) 58%,
+            rgba(177,137,83,0.32) 100%);
+    clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    filter: drop-shadow(-2px -2px 2px rgba(92,61,33,0.18));
+    pointer-events: none;
+}
+
+/* Letter content */
+
+.letter-content {
+    position: relative;
+    z-index: 2;
+    opacity: 0;
+}
+
+.parchment.open .letter-content {
+    animation: fadeIn 1.5s ease 1.5s forwards;
+}
+
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+    }
+}
+
+.date {
+    text-align: right;
+    font-size: 13px;
+    font-style: italic;
+    margin-bottom: 40px;
+    color: #80633e;
+}
+
+.heading {
+    text-align: center;
+    font-size: clamp(25px, 5vw, 36px);
+    font-style: italic;
+    margin-bottom: 35px;
+    color: #65452a;
+}
+
+.message {
+    font-size: clamp(16px, 2.5vw, 19px);
+    line-height: 2;
+    white-space: pre-wrap;
+    font-style: italic;
+    color: #493421;
+    min-height: 200px;
+}
+
+.signature {
+    text-align: right;
+    margin-top: 35px;
+    font-size: 22px;
+    font-style: italic;
+    color: #754a30;
+}
+
+/* Close button */
+
+.close-btn {
+    display: block;
+    margin: 35px auto 0;
+    min-height: 44px;
+    padding: 12px 24px;
+
+    border: 1px solid #967348;
+    background: transparent;
+    color: #60462c;
+
+    font-family: Georgia, serif;
+    cursor: pointer;
+    letter-spacing: 2px;
+    transition: 0.3s;
+}
+
+.close-btn:hover {
+    background: #8e704c;
+    color: #fff1d5;
+}
+
+/* Mobile */
+
+@media(max-width: 600px) {
+    body {
+        align-items: stretch;
+        overflow-y: auto;
+    }
+
+    .scene {
+        align-items: flex-start;
+        padding:
+            max(20px, env(safe-area-inset-top))
+            max(12px, env(safe-area-inset-right))
+            max(20px, env(safe-area-inset-bottom))
+            max(12px, env(safe-area-inset-left));
+    }
+
+    .letter-container {
+        width: 100%;
+        margin: auto 0;
+        perspective: 900px;
+    }
+
+    .closed-letter {
+        height: min(280px, 42vh);
+        height: min(280px, 42svh);
+        min-height: 220px;
+    }
+
+    .parchment {
+        min-height: 0;
+        padding: 38px 25px;
+        border-width: 6px;
+    }
+
+    .parchment::before {
+        inset: 9px;
+    }
+
+    .parchment::after {
+        width: 30px;
+        height: 30px;
+    }
+
+    .date {
+        margin-bottom: 28px;
+        font-size: 12px;
+    }
+
+    .heading {
+        margin-bottom: 26px;
+    }
+
+    .message {
+        min-height: 0;
+        font-size: 16px;
+        line-height: 1.75;
+        overflow-wrap: anywhere;
+    }
+
+    .signature {
+        margin-top: 28px;
+        font-size: 20px;
+    }
+
+    .close-btn {
+        margin-top: 28px;
+    }
+}
+
+@media (max-width: 360px) {
+    .parchment {
+        padding: 34px 20px;
+    }
+
+    .open-text {
+        letter-spacing: 2px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="scene">
+
+    <div class="letter-container">
+
+        <!-- CLOSED LETTER -->
+
+        <div class="closed-letter" id="closedLetter"
+             onclick="openLetter()">
+
+            <div class="seal">✦</div>
+
+            <div class="open-text">
+                CLICK TO OPEN
+            </div>
+
+        </div>
+
+        <!-- OPEN PARCHMENT -->
+
+        <div class="parchment" id="parchment">
+
+            <div class="letter-content">
+
+                <div class="date">
+                    A letter written with love
+                </div>
+
+                <h1 class="heading">
+                    Dear Giddu ❤️../
+                </h1>
+
+                <div class="message" id="message"></div>
+
+                <div class="signature" id="signature">
+                    With love,<br>
+                    Someone who cares ❤️
+                </div>
+
+                <button class="close-btn"
+                        onclick="closeLetter()">
+                    CLOSE LETTER
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script>
+
+const letterMessage = `
+Some people enter our lives unexpectedly,
+and somehow make everything more beautiful.
+
+Some memories never fade,
+some moments never lose their magic,
+and some people will always have
+a special place in our hearts.
+
+I don't know how to put everything
+into words, but I hope this little letter
+makes you smile.
+
+You are a beautiful part of this story,
+and this is just one little reminder
+of how special you are.
+
+Never stop being the wonderful person
+you are. ❤️
+`;
+
+let typingTimer;
+
+function openLetter() {
+
+    const closed = document.getElementById("closedLetter");
+    const parchment = document.getElementById("parchment");
+
+    closed.classList.add("hide");
+
+    setTimeout(() => {
+
+        closed.style.display = "none";
+
+        parchment.style.display = "block";
+
+        parchment.classList.remove("open");
+
+        void parchment.offsetWidth;
+
+        parchment.classList.add("open");
+
+        setTimeout(() => {
+            startTyping();
+        }, 2200);
+
+    }, 800);
+}
+
+function startTyping() {
+
+    const message = document.getElementById("message");
+
+    clearInterval(typingTimer);
+
+    message.textContent = "";
+
+    let index = 0;
+
+    typingTimer = setInterval(() => {
+
+        if (index < letterMessage.length) {
+
+            message.textContent += letterMessage[index];
+
+            index++;
+
+        } else {
+
+            clearInterval(typingTimer);
+
+        }
+
+    }, 40);
+}
+
+function closeLetter() {
+
+    clearInterval(typingTimer);
+
+    const closed = document.getElementById("closedLetter");
+    const parchment = document.getElementById("parchment");
+
+    parchment.classList.remove("open");
+    parchment.style.display = "none";
+
+    closed.style.display = "flex";
+
+    closed.classList.remove("hide");
+
+}
+
+</script>
+
+</body>
+</html>

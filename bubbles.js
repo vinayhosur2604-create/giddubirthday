@@ -1,7 +1,7 @@
 (function () {
   'use strict';
 
-  const BUBBLE_COUNT = 4;
+  const DESKTOP_BUBBLE_COUNT = 4;
   const IMAGE_COUNT = 20;
   const IMAGE_DIR = 'images/bubbles/';
   const IMAGE_EXT = '.jpg';
@@ -9,10 +9,12 @@
   const MAX_DURATION = 30;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
-  const INITIAL_PHASES = [0.2, 0.39, 0.58, 0.77];
-
   const container = document.getElementById('bubbles-container');
   if (!container) return;
+
+  const isMobile = window.matchMedia('(max-width: 600px)').matches;
+  const bubbleCount = isMobile ? 2 : DESKTOP_BUBBLE_COUNT;
+  const initialPhases = isMobile ? [0.2, 0.58] : [0.2, 0.39, 0.58, 0.77];
 
   const imageSequence = Array.from({ length: IMAGE_COUNT }, (_, i) =>
     `${IMAGE_DIR}${i + 1}${IMAGE_EXT}`
@@ -69,10 +71,10 @@
     swayWrapper.style.cssText = `
       position: absolute;
       bottom: calc(0px - var(--bubble-size) - 20px);
-      left: calc(${lane * 25}vw + (25vw - var(--bubble-size)) / 2);
+      left: calc(${((lane + 0.5) * 100) / bubbleCount}vw - var(--bubble-size) / 2);
       width: var(--bubble-size);
       height: var(--bubble-size);
-      --bubble-size: clamp(1px, calc(25vw - 28px), 230px);
+      --bubble-size: clamp(1px, calc(${isMobile ? '50vw - 56px' : '25vw - 28px'}), 230px);
       pointer-events: none;
     `;
 
@@ -125,8 +127,8 @@
       return;
     }
 
-    for (let lane = 0; lane < BUBBLE_COUNT; lane += 1) {
-      createBubble(lane, INITIAL_PHASES[lane]);
+    for (let lane = 0; lane < bubbleCount; lane += 1) {
+      createBubble(lane, initialPhases[lane]);
     }
   }
 

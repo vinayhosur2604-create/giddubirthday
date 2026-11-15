@@ -7,6 +7,7 @@
   const IMAGE_EXT = '.jpg';
   const MIN_DURATION = 12;
   const MAX_DURATION = 30;
+  const MOBILE_SPEED_FACTOR = 0.6;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
   const container = document.getElementById('bubbles-container');
@@ -59,7 +60,7 @@
   }
 
   function createBubble(lane, initialPhase = 0) {
-    const duration = rand(MIN_DURATION, MAX_DURATION);
+    const duration = rand(MIN_DURATION, MAX_DURATION) * (isMobile ? MOBILE_SPEED_FACTOR : 1);
     const opacity = Number(rand(MIN_OPACITY, MAX_OPACITY).toFixed(2));
 
     const imageSrc = imageSequence[nextImageIndex];

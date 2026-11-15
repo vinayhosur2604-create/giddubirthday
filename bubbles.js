@@ -5,8 +5,7 @@
   const IMAGE_COUNT = 20;
   const IMAGE_DIR = 'images/bubbles/';
   const IMAGE_EXT = '.jpg';
-  const MIN_DURATION = 12;
-  const MAX_DURATION = 30;
+  const FLOAT_DURATION = 24;
   const MOBILE_SPEED_FACTOR = 0.6;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
@@ -60,7 +59,7 @@
   }
 
   function createBubble(lane, initialPhase = 0) {
-    const duration = rand(MIN_DURATION, MAX_DURATION) * (isMobile ? MOBILE_SPEED_FACTOR : 1);
+    const duration = FLOAT_DURATION * (isMobile ? MOBILE_SPEED_FACTOR : 1);
     const opacity = Number(rand(MIN_OPACITY, MAX_OPACITY).toFixed(2));
 
     const imageSrc = imageSequence[nextImageIndex];
@@ -111,13 +110,18 @@
     swayWrapper.appendChild(bubble);
     container.appendChild(swayWrapper);
 
+    const timeUntilMidpoint = Math.max(0, 0.5 - initialPhase) * duration * 1000;
+    setTimeout(() => {
+      if (nextImageIndex < imageSequence.length) {
+        createBubble(lane);
+      }
+    }, timeUntilMidpoint);
+
     bubble.addEventListener('animationend', () => {
       swayWrapper.remove();
       activeBubbleCount -= 1;
 
-      if (nextImageIndex < imageSequence.length) {
-        createBubble(lane, rand(0.18, 0.24));
-      } else if (activeBubbleCount === 0) {
+      if (nextImageIndex === imageSequence.length && activeBubbleCount === 0) {
         window.location.assign('letter.html');
       }
     });

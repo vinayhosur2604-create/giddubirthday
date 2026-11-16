@@ -23,7 +23,7 @@
       letter.textContent = character;
       wishMessage.appendChild(letter);
       requestAnimationFrame(() => letter.classList.add('is-visible'));
-      await wait(70);
+      await wait(50);
     }
 
     await wait(1200);

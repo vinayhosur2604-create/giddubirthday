@@ -1,391 +1,492 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>A Letter For You</title>
-<link rel="stylesheet" href="letter.css">
+<title>A Letter From The Heart</title>
 
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500&family=Great+Vibes&display=swap');
+
+:root {
+    --night: #090b20;
+    --purple: #30204f;
+    --paper: #f0dfba;
+    --ink: #543b2b;
+    --gold: #d6b77e;
+}
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-html {
-    min-height: 100%;
-}
-
 body {
     min-height: 100vh;
-    min-height: 100svh;
+    overflow-x: hidden;
+    background:
+        radial-gradient(ellipse at 50% 45%,
+            #30204f 0%,
+            #17132f 50%,
+            #090b20 100%);
+    font-family: 'Cormorant Garamond', serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    overflow-x: clip;
-
-    background:
-        radial-gradient(ellipse at center,
-            #30204f 0%,
-            #17132f 55%,
-            #090b20 100%);
-
-    font-family: Georgia, serif;
+    color: white;
 }
 
-/* Ambient background glow */
+/* Background ambient glow */
 
-body::before {
-    content: "";
+.ambient {
     position: fixed;
     width: 500px;
     height: 500px;
     border-radius: 50%;
-    background: rgba(155, 110, 210, 0.12);
-    filter: blur(100px);
+    background: rgba(150, 100, 220, .13);
+    filter: blur(110px);
     pointer-events: none;
 }
 
-/* Main scene */
+/* Scene */
 
 .scene {
-    width: 100%;
     min-height: 100vh;
-    min-height: 100svh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 30px 15px;
-}
-
-/* Letter container */
-
-.letter-container {
-    width: min(650px, 95vw);
-    perspective: 1200px;
-}
-
-/* Closed parchment */
-
-.closed-letter {
     width: 100%;
-    height: 360px;
-    position: relative;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    cursor: pointer;
+    padding: 40px 15px;
+    position: relative;
+    z-index: 1;
+}
+
+.intro {
+    text-align: center;
+    margin-bottom: 65px;
+    transition: opacity .8s, transform .8s;
+}
+
+.intro h1 {
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(38px, 6vw, 65px);
+    font-weight: 400;
+    color: #e7d1aa;
+    text-shadow: 0 0 25px rgba(218, 185, 130, .3);
+}
+
+.intro p {
+    font-size: 15px;
+    color: #b9a8ce;
+    letter-spacing: 4px;
+    margin-top: 10px;
+    text-transform: uppercase;
+}
+
+.intro.hidden {
+    opacity: 0;
+    transform: translateY(-25px);
+    pointer-events: none;
+}
+
+/* Envelope */
+
+.envelope-area {
+    width: min(460px, 88vw);
+    height: 300px;
+    position: relative;
+    perspective: 1200px;
+    transition: transform 1s;
+}
+
+.envelope-area.expanded {
+    transform: translateY(90px);
+}
+
+.envelope {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #a17b54, #745137);
+    border-radius: 5px;
+    box-shadow:
+        0 30px 70px rgba(0,0,0,.55),
+        inset 0 0 30px rgba(35,20,10,.4);
+    z-index: 3;
+}
+
+/* Inner envelope */
+
+.envelope-back {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(145deg, #b28b60, #795537);
+    border-radius: 5px;
+}
+
+/* Letter inside envelope */
+
+.letter {
+    position: absolute;
+    width: 90%;
+    left: 5%;
+    height: 255px;
+    bottom: 10px;
+    z-index: 2;
 
     background:
         radial-gradient(ellipse at center,
-            #e8d5a9,
-            #c5a978 80%,
-            #98744d);
+            #f5e8c9,
+            #e5d0a5);
 
-    border: 5px solid #8e704c;
-    border-radius: 5px;
+    color: var(--ink);
+    border: 1px solid #b89a6c;
 
-    box-shadow:
-        0 25px 70px rgba(0,0,0,0.6),
-        inset 0 0 35px rgba(90,55,20,0.35);
+    padding: 25px;
+    text-align: center;
 
-    transition: 1s;
-    transform-origin: top;
+    transform: translateY(0);
+    transition: transform 1.5s cubic-bezier(.2,.7,.2,1);
 }
 
-.closed-letter::before {
-    content: "";
+.letter h2 {
+    font-family: 'Great Vibes', cursive;
+    font-size: 35px;
+    font-weight: 400;
+}
+
+.letter p {
+    font-style: italic;
+    margin-top: 15px;
+}
+
+/* Envelope front folds */
+
+.envelope-front {
     position: absolute;
-    inset: 12px;
-    border: 1px solid rgba(100,65,30,0.5);
-}
-
-.closed-letter.hide {
-    transform: rotateX(90deg);
-    opacity: 0;
+    inset: 0;
+    z-index: 4;
+    overflow: hidden;
     pointer-events: none;
 }
 
-.seal {
-    width: 75px;
-    height: 75px;
+.fold-left {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: min(230px, 44vw) solid #a67e54;
+    border-top: 150px solid transparent;
+    border-bottom: 150px solid transparent;
+    filter: brightness(.92);
+}
+
+.fold-right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-right: min(230px, 44vw) solid #9b754e;
+    border-top: 150px solid transparent;
+    border-bottom: 150px solid transparent;
+}
+
+.fold-bottom {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    width: 0;
+    height: 0;
+    border-left: min(230px, 44vw) solid transparent;
+    border-right: min(230px, 44vw) solid transparent;
+    border-bottom: 170px solid #b18b5f;
+}
+
+/* Envelope flap */
+
+.flap {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 150px;
+    background: #c09b6c;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+    transform-origin: top center;
+    transition: transform 1s ease;
+    z-index: 6;
+    filter: drop-shadow(0 5px 4px rgba(0,0,0,.2));
+}
+
+.envelope-area.opened .flap {
+    transform: rotateX(180deg);
+    z-index: 1;
+}
+
+/* Wax seal */
+
+.wax-seal {
+    position: absolute;
+    top: 105px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 76px;
+    height: 76px;
     border-radius: 50%;
+    z-index: 8;
+    cursor: pointer;
+
     display: flex;
     justify-content: center;
     align-items: center;
 
-    background: radial-gradient(circle, #b94347, #70202b);
-    color: #f4d9a2;
-    font-size: 30px;
-
-    box-shadow: 0 5px 15px rgba(0,0,0,0.35);
-    z-index: 2;
-}
-
-.open-text {
-    position: absolute;
-    bottom: 35px;
-    color: #63482d;
-    letter-spacing: 3px;
-    font-size: 12px;
-}
-
-/* Open parchment */
-
-.parchment {
-    display: none;
-    position: relative;
-    width: 100%;
-    min-height: 500px;
-    padding: 55px 50px;
+    color: #f5d9a1;
+    font-size: 34px;
 
     background:
-        linear-gradient(90deg,
-            rgba(96,61,28,0.12) 0%,
-            transparent 5%,
-            transparent 94%,
-            rgba(96,61,28,0.13) 100%),
-        linear-gradient(180deg,
-            transparent 49.2%,
-            rgba(126,88,48,0.08) 49.8%,
-            rgba(255,250,230,0.38) 50.2%,
-            rgba(126,88,48,0.07) 50.8%,
-            transparent 51.5%),
-        radial-gradient(ellipse at 20% 20%,
-            rgba(255,255,255,0.38),
-            transparent 52%),
-        radial-gradient(ellipse at 75% 35%,
-            rgba(255,255,255,0.12),
-            transparent 48%),
-        radial-gradient(ellipse at 90% 90%,
-            rgba(120,75,30,0.2),
-            transparent 50%),
-        linear-gradient(120deg,
-            #dfc89a,
-            #f8edcf 28%,
-            #efdfb9 52%,
-            #f4e6c6 73%,
-            #d7bc8d);
+        radial-gradient(circle at 35% 30%,
+            #df7772,
+            #a32f3b 55%,
+            #681e2a);
 
-    border: 8px solid #a88659;
-    border-radius: 3px 5px 4px 3px;
+    border: 3px solid #9c3037;
 
     box-shadow:
-        0 30px 90px rgba(0,0,0,0.68),
-        0 8px 18px rgba(0,0,0,0.28),
-        inset 0 0 35px rgba(100,60,20,0.24),
-        inset 5px 0 12px rgba(120,78,35,0.12),
-        inset -4px 0 10px rgba(120,78,35,0.1);
+        0 5px 15px rgba(0,0,0,.4),
+        inset 0 2px 6px rgba(255,255,255,.3);
 
-    color: #48331f;
+    transition: opacity .5s, transform .6s;
+    animation: sealGlow 3s infinite alternate;
+}
 
-    transform-origin: top center;
-    transform: perspective(1200px) rotateX(-82deg);
+@keyframes sealGlow {
+    from { box-shadow: 0 0 10px rgba(220,100,110,.2); }
+    to { box-shadow: 0 0 28px rgba(220,100,110,.65); }
+}
+
+.wax-seal:hover {
+    transform: translateX(-50%) scale(1.08);
+}
+
+.wax-seal.break {
+    animation: sealBreak .65s forwards;
+    pointer-events: none;
+}
+
+@keyframes sealBreak {
+    0% { transform: translateX(-50%) scale(1) rotate(0); }
+    35% { transform: translateX(-50%) scale(1.25) rotate(-12deg); }
+    100% { transform: translateX(-50%) scale(.1) rotate(40deg); opacity: 0; }
+}
+
+/* Letter slides out */
+
+.envelope-area.opened .letter {
+    transform: translateY(-175px);
+    transition-delay: .5s;
+}
+
+/* Full parchment */
+
+.parchment-wrap {
+    position: relative;
+    width: min(680px, 94vw);
+    margin-top: 30px;
+    height: 0;
     opacity: 0;
+    overflow: hidden;
+    transform: scaleY(.05);
+    transform-origin: top center;
+    transition:
+        height 1.8s ease,
+        opacity .8s ease,
+        transform 1.8s cubic-bezier(.2,.7,.2,1);
 }
 
-.parchment.open {
-    display: block;
-    animation: unfold 2s cubic-bezier(.22,.7,.2,1) forwards;
+.parchment-wrap.revealed {
+    height: min(780px, 80vh);
+    opacity: 1;
+    transform: scaleY(1);
 }
 
-@keyframes unfold {
-    0% {
-        transform: perspective(1200px) rotateX(-82deg);
-        opacity: 0;
-    }
+/* Parchment */
 
-    45% {
-        transform: perspective(1200px) rotateX(8deg);
-        opacity: 1;
-    }
+.parchment {
+    position: relative;
+    min-height: 100%;
+    padding: 65px 60px 45px;
+    overflow-y: auto;
+    color: #513923;
 
-    100% {
-        transform: perspective(1200px) rotateX(0deg);
-        opacity: 1;
-    }
+    background:
+        radial-gradient(ellipse at 10% 10%,
+            rgba(255,255,255,.3),
+            transparent 40%),
+        radial-gradient(ellipse at 90% 90%,
+            rgba(130,85,40,.18),
+            transparent 45%),
+        linear-gradient(115deg,
+            #d8bd8c,
+            #f4e7c7 35%,
+            #ead6aa 70%,
+            #d6b98a);
+
+    border: 7px solid #a58252;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.55),
+        inset 0 0 35px rgba(110,70,30,.25);
 }
-
-/* Inner decorative border */
 
 .parchment::before {
     content: "";
     position: absolute;
     inset: 13px;
-    border: 1px solid rgba(125,85,40,0.5);
+    border: 1px solid rgba(114,75,37,.45);
     pointer-events: none;
 }
 
 .parchment::after {
-    content: "";
+    content: "✦";
     position: absolute;
-    right: 8px;
-    bottom: 8px;
-    width: 42px;
-    height: 42px;
-    background:
-        linear-gradient(135deg,
-            transparent 48%,
-            rgba(132,94,53,0.18) 49%,
-            rgba(255,248,225,0.72) 58%,
-            rgba(177,137,83,0.32) 100%);
-    clip-path: polygon(100% 0, 100% 100%, 0 100%);
-    filter: drop-shadow(-2px -2px 2px rgba(92,61,33,0.18));
-    pointer-events: none;
+    top: 25px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #9b784c;
+    font-size: 23px;
 }
 
 /* Letter content */
 
-.letter-content {
+.letter-body {
     position: relative;
     z-index: 2;
     opacity: 0;
+    transition: opacity 1s;
 }
 
-.parchment.open .letter-content {
-    animation: fadeIn 1.5s ease 1.5s forwards;
+.parchment-wrap.revealed .letter-body {
+    opacity: 1;
+    transition-delay: 1.6s;
 }
 
-@keyframes fadeIn {
-    to {
-        opacity: 1;
-    }
-}
-
-.date {
+.letter-date {
     text-align: right;
-    font-size: 13px;
     font-style: italic;
-    margin-bottom: 40px;
-    color: #80633e;
+    font-size: 16px;
+    color: #856746;
 }
 
-.heading {
+.letter-heading {
     text-align: center;
-    font-size: clamp(25px, 5vw, 36px);
-    font-style: italic;
-    margin-bottom: 35px;
-    color: #65452a;
+    font-family: 'Great Vibes', cursive;
+    font-size: clamp(35px, 6vw, 49px);
+    font-weight: 400;
+    margin: 40px 0 30px;
 }
 
-.message {
-    font-size: clamp(16px, 2.5vw, 19px);
-    line-height: 2;
+.letter-message {
+    font-size: clamp(17px, 2.5vw, 21px);
+    line-height: 1.85;
     white-space: pre-wrap;
     font-style: italic;
-    color: #493421;
-    min-height: 200px;
+    min-height: 220px;
 }
 
-.signature {
+.letter-signature {
+    font-family: 'Great Vibes', cursive;
+    font-size: 35px;
     text-align: right;
-    margin-top: 35px;
-    font-size: 22px;
-    font-style: italic;
-    color: #754a30;
+    margin-top: 30px;
+    opacity: 0;
 }
 
-/* Close button */
+.letter-signature.visible {
+    opacity: 1;
+    transition: opacity 1s;
+}
 
-.close-btn {
-    display: block;
-    margin: 35px auto 0;
-    min-height: 44px;
-    padding: 12px 24px;
+/* Replay */
 
-    border: 1px solid #967348;
+.replay {
+    margin: 25px auto 0;
+    display: none;
+    padding: 12px 30px;
+    color: #e5d1aa;
     background: transparent;
-    color: #60462c;
-
-    font-family: Georgia, serif;
+    border: 1px solid #c6a875;
+    letter-spacing: 3px;
+    font-family: inherit;
     cursor: pointer;
-    letter-spacing: 2px;
-    transition: 0.3s;
+    font-size: 15px;
+    transition: .3s;
 }
 
-.close-btn:hover {
-    background: #8e704c;
-    color: #fff1d5;
+.replay.visible {
+    display: block;
+}
+
+.replay:hover {
+    background: #c6a875;
+    color: #17132f;
 }
 
 /* Mobile */
 
 @media(max-width: 600px) {
-    body {
-        align-items: stretch;
-        overflow-y: auto;
+    .intro {
+        margin-bottom: 55px;
     }
 
-    .scene {
-        align-items: flex-start;
-        padding:
-            max(20px, env(safe-area-inset-top))
-            max(12px, env(safe-area-inset-right))
-            max(20px, env(safe-area-inset-bottom))
-            max(12px, env(safe-area-inset-left));
+    .envelope-area {
+        height: 240px;
     }
 
-    .letter-container {
-        width: 100%;
-        margin: auto 0;
-        perspective: 900px;
+    .fold-left,
+    .fold-right {
+        border-top-width: 120px;
+        border-bottom-width: 120px;
     }
 
-    .closed-letter {
-        height: min(280px, 42vh);
-        height: min(280px, 42svh);
-        min-height: 220px;
+    .fold-bottom {
+        border-bottom-width: 135px;
+    }
+
+    .flap {
+        height: 120px;
+    }
+
+    .wax-seal {
+        top: 82px;
+        width: 65px;
+        height: 65px;
+    }
+
+    .envelope-area.opened .letter {
+        transform: translateY(-135px);
+    }
+
+    .envelope-area.expanded {
+        transform: translateY(65px);
     }
 
     .parchment {
-        min-height: 0;
-        padding: 38px 25px;
-        border-width: 6px;
+        padding: 55px 30px 35px;
     }
 
-    .parchment::before {
-        inset: 9px;
-    }
-
-    .parchment::after {
-        width: 30px;
-        height: 30px;
-    }
-
-    .date {
-        margin-bottom: 28px;
-        font-size: 12px;
-    }
-
-    .heading {
-        margin-bottom: 26px;
-    }
-
-    .message {
-        min-height: 0;
-        font-size: 16px;
-        line-height: 1.75;
-        overflow-wrap: anywhere;
-    }
-
-    .signature {
-        margin-top: 28px;
-        font-size: 20px;
-    }
-
-    .close-btn {
-        margin-top: 28px;
+    .parchment-wrap.revealed {
+        height: 75vh;
     }
 }
 
-@media (max-width: 360px) {
-    .parchment {
-        padding: 34px 20px;
-    }
-
-    .open-text {
-        letter-spacing: 2px;
+@media(prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
     }
 }
 </style>
@@ -393,48 +494,74 @@ body::before {
 
 <body>
 
+<div class="ambient"></div>
+
 <div class="scene">
 
-    <div class="letter-container">
+    <div class="intro" id="intro">
+        <h1>A Letter From The Heart</h1>
+        <p>A little something for you</p>
+    </div>
 
-        <!-- CLOSED LETTER -->
+    <!-- ENVELOPE -->
 
-        <div class="closed-letter" id="closedLetter"
-             onclick="openLetter()">
+    <div class="envelope-area" id="envelopeArea">
 
-            <div class="seal">✦</div>
+        <div class="envelope">
 
-            <div class="open-text">
-                CLICK TO OPEN
+            <div class="envelope-back"></div>
+
+            <!-- Letter preview inside envelope -->
+
+            <div class="letter">
+                <h2>A special letter...</h2>
+                <p>Written with love, just for you.</p>
+            </div>
+
+            <!-- Envelope folds -->
+
+            <div class="envelope-front">
+                <div class="fold-left"></div>
+                <div class="fold-right"></div>
+                <div class="fold-bottom"></div>
+            </div>
+
+            <!-- Opening flap -->
+
+            <div class="flap"></div>
+
+            <!-- Wax seal -->
+
+            <div class="wax-seal" id="waxSeal"
+                 onclick="breakSeal()">
+                ✦
             </div>
 
         </div>
 
-        <!-- OPEN PARCHMENT -->
+    </div>
 
-        <div class="parchment" id="parchment">
+    <!-- PARCHMENT -->
 
-            <div class="letter-content">
+    <div class="parchment-wrap" id="parchmentWrap">
 
-                <div class="date">
-                    A letter written with love
+        <div class="parchment">
+
+            <div class="letter-body">
+
+                <div class="letter-date">
+                    A little memory, written with love
                 </div>
 
-                <h1 class="heading">
-                    Dear Giddu ❤️../
-                </h1>
+                <h2 class="letter-heading">
+                    Dear Pratiksha...
+                </h2>
 
-                <div class="message" id="message"></div>
+                <div class="letter-message" id="letterMessage"></div>
 
-                <div class="signature" id="signature">
-                    With love,<br>
-                    Someone who cares ❤️
+                <div class="letter-signature" id="signature">
+                    With love, Always ❤️
                 </div>
-
-                <button class="close-btn"
-                        onclick="closeLetter()">
-                    CLOSE LETTER
-                </button>
 
             </div>
 
@@ -442,101 +569,197 @@ body::before {
 
     </div>
 
+    <button class="replay" id="replay"
+            onclick="replayExperience()">
+        ↻ &nbsp; EXPERIENCE AGAIN
+    </button>
+
 </div>
 
 <script>
 
-const letterMessage = `
+/* ==================================
+   PERSONALIZE YOUR LETTER HERE
+================================== */
+
+const recipient = "Pratiksha";
+
+const message = `
 Some people enter our lives unexpectedly,
-and somehow make everything more beautiful.
+and somehow make everything a little more beautiful.
 
-Some memories never fade,
-some moments never lose their magic,
-and some people will always have
-a special place in our hearts.
+You are one of those people.
 
-I don't know how to put everything
-into words, but I hope this little letter
-makes you smile.
+There are moments that become memories,
+conversations that become stories,
+and people who become a special part of our lives.
 
-You are a beautiful part of this story,
-and this is just one little reminder
-of how special you are.
+I don't know whether words can ever express
+everything that is in my heart,
+but I hope this little letter brings a smile
+to your face.
 
-Never stop being the wonderful person
-you are. ❤️
+I hope you always find reasons to smile,
+dream without limits,
+and believe in the magic of little things.
+
+No matter where life takes us,
+some memories will always remain precious.
+
+And you will always be a beautiful part
+of this little story.
+
+Keep shining, keep smiling,
+and never stop being yourself.
+
 `;
 
-let typingTimer;
+const signatureText = "With love, Always ❤️";
 
-function openLetter() {
+/* ==================================
+   ANIMATION CONTROLS
+================================== */
 
-    const closed = document.getElementById("closedLetter");
-    const parchment = document.getElementById("parchment");
+let typingInterval;
+let opened = false;
 
-    closed.classList.add("hide");
+function breakSeal() {
+
+    if (opened) return;
+    opened = true;
+
+    const seal = document.getElementById("waxSeal");
+    const envelope = document.getElementById("envelopeArea");
+    const intro = document.getElementById("intro");
+
+    seal.classList.add("break");
 
     setTimeout(() => {
 
-        closed.style.display = "none";
+        envelope.classList.add("opened");
+        intro.classList.add("hidden");
 
-        parchment.style.display = "block";
+    }, 550);
 
-        parchment.classList.remove("open");
+    setTimeout(() => {
 
-        void parchment.offsetWidth;
+        envelope.classList.add("expanded");
 
-        parchment.classList.add("open");
+    }, 1250);
 
-        setTimeout(() => {
-            startTyping();
-        }, 2200);
+    setTimeout(() => {
 
-    }, 800);
+        revealParchment();
+
+    }, 2000);
 }
 
-function startTyping() {
+/* ==================================
+   UNROLL PARCHMENT
+================================== */
 
-    const message = document.getElementById("message");
+function revealParchment() {
 
-    clearInterval(typingTimer);
+    const wrap = document.getElementById("parchmentWrap");
 
-    message.textContent = "";
+    wrap.classList.add("revealed");
+
+    setTimeout(() => {
+
+        startWriting();
+
+    }, 3000);
+}
+
+/* ==================================
+   HANDWRITTEN TEXT EFFECT
+================================== */
+
+function startWriting() {
+
+    const messageElement =
+        document.getElementById("letterMessage");
+
+    const signature =
+        document.getElementById("signature");
+
+    const heading =
+        document.querySelector(".letter-heading");
+
+    heading.textContent = "Dear " + recipient + "...";
+
+    messageElement.textContent = "";
+    signature.classList.remove("visible");
 
     let index = 0;
 
-    typingTimer = setInterval(() => {
+    clearInterval(typingInterval);
 
-        if (index < letterMessage.length) {
+    typingInterval = setInterval(() => {
 
-            message.textContent += letterMessage[index];
+        if (index < message.length) {
+
+            messageElement.textContent += message[index];
 
             index++;
 
+            // Auto-scroll as text is written
+            const wrap = document.getElementById("parchmentWrap");
+            wrap.scrollTop = wrap.scrollHeight;
+
         } else {
 
-            clearInterval(typingTimer);
+            clearInterval(typingInterval);
+
+            setTimeout(() => {
+
+                signature.classList.add("visible");
+
+                document.getElementById("replay")
+                    .classList.add("visible");
+
+            }, 700);
 
         }
 
-    }, 40);
+    }, 38);
 }
 
-function closeLetter() {
+/* ==================================
+   REPLAY EXPERIENCE
+================================== */
 
-    clearInterval(typingTimer);
+function replayExperience() {
 
-    const closed = document.getElementById("closedLetter");
-    const parchment = document.getElementById("parchment");
+    clearInterval(typingInterval);
 
-    parchment.classList.remove("open");
-    parchment.style.display = "none";
+    opened = false;
 
-    closed.style.display = "flex";
+    document.getElementById("waxSeal")
+        .classList.remove("break");
 
-    closed.classList.remove("hide");
+    document.getElementById("envelopeArea")
+        .classList.remove("opened", "expanded");
+
+    document.getElementById("intro")
+        .classList.remove("hidden");
+
+    document.getElementById("parchmentWrap")
+        .classList.remove("revealed");
+
+    document.getElementById("letterMessage")
+        .textContent = "";
+
+    document.getElementById("signature")
+        .classList.remove("visible");
+
+    document.getElementById("replay")
+        .classList.remove("visible");
+
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
 }
+
 
 </script>
 

@@ -3,11 +3,51 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Floating Bubbles</title>
-  <link rel="stylesheet" href="bubbles.css">
+  <title>Favorite Moments</title>
+  <link rel="stylesheet" href="hanging.css">
 </head>
 <body>
-  <div id="bubbles-container" aria-hidden="true"></div>
-  <script src="bubbles.js"></script>
+  <main class="page-layout">
+    <div class="hanging-photos" aria-label="Three hanging photos">
+      <div class="photo-drop photo-drop--first">
+        <div class="photo-sway">
+          <div class="hanging-cord" aria-hidden="true"></div>
+          <figure class="photo-frame">
+            <img src="images/bubbles/1.jpg" alt="A favorite moment">
+          </figure>
+        </div>
+      </div>
+
+      <div class="photo-drop photo-drop--second">
+        <div class="photo-sway">
+          <div class="hanging-cord" aria-hidden="true"></div>
+          <figure class="photo-frame">
+            <img src="images/bubbles/2.jpg" alt="A favorite moment">
+          </figure>
+        </div>
+      </div>
+
+      <div class="photo-drop photo-drop--third">
+        <div class="photo-sway">
+          <div class="hanging-cord" aria-hidden="true"></div>
+          <figure class="photo-frame">
+            <img src="images/bubbles/3.jpg" alt="A favorite moment">
+          </figure>
+        </div>
+      </div>
+    </div>
+
+    <section class="wish-panel" aria-labelledby="wish-title">
+      <p class="wish-kicker">A little note from the heart</p>
+      <h1 id="wish-title">To my favorite person</h1>
+      <p class="wish-prompt">A birthday wish, just for you.</p>
+      <p class="wish-message" id="wish-message" aria-live="polite" hidden>
+        Happy birthday to my favorite person in the whole world. Your smile makes ordinary days brighter, and having you in my life is a gift I’m grateful for every day. May the year ahead bring you all the happiness, peace, laughter, and little adventures your heart can hold. Keep shining exactly as you are, because the world is lovelier with you in it. I hope today reminds you how deeply you are loved and cherished—not just today, but every day. You’ll always have a very special place in my heart. Happy birthday, my favorite person.
+      </p>
+    </section>
+
+    <a class="continue-link" href="bubbles.html">Continue to the bubbles <span aria-hidden="true">→</span></a>
+  </main>
+  <script src="wish.js" defer></script>
 </body>
 </html>

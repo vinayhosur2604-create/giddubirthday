@@ -1,12 +1,12 @@
 (function () {
   'use strict';
 
-  const DESKTOP_BUBBLE_COUNT = 4;
+  const COLUMN_COUNT = 2;
   const IMAGE_COUNT = 20;
   const IMAGE_DIR = 'images/bubbles/';
   const IMAGE_EXT = '.jpg';
   const FLOAT_DURATION = 8;
-  const NEXT_BUBBLE_PHASE = 0.2;
+  const NEXT_BUBBLE_PHASE = 0.25;
   const MOBILE_SPEED_FACTOR = 0.55;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
@@ -14,9 +14,6 @@
   if (!container) return;
 
   const isMobile = window.matchMedia('(max-width: 600px)').matches;
-  const bubbleCount = isMobile ? 2 : DESKTOP_BUBBLE_COUNT;
-  const initialPhases = isMobile ? [0.2, 0.58] : [0.2, 0.39, 0.58, 0.77];
-
   const imageSequence = Array.from({ length: IMAGE_COUNT }, (_, i) =>
     `${IMAGE_DIR}${i + 1}${IMAGE_EXT}`
   );
@@ -58,10 +55,12 @@
     return Math.random() * (max - min) + min;
   }
 
-  function createBubble(lane, initialPhase = 0) {
+  function createBubble() {
     const duration = FLOAT_DURATION * (isMobile ? MOBILE_SPEED_FACTOR : 1);
     const opacity = Number(rand(MIN_OPACITY, MAX_OPACITY).toFixed(2));
 
+    const bubbleIndex = nextImageIndex;
+    const lane = bubbleIndex % COLUMN_COUNT;
     const imageSrc = imageSequence[nextImageIndex];
     nextImageIndex += 1;
     const isLastBubble = nextImageIndex === imageSequence.length;
@@ -71,7 +70,7 @@
     swayWrapper.style.cssText = `
       position: absolute;
       bottom: calc(0px - var(--bubble-size) - 20px);
-      left: calc(${((lane + 0.5) * 100) / bubbleCount}vw - var(--bubble-size) / 2);
+      left: calc(${((lane + 0.5) * 100) / COLUMN_COUNT}vw - var(--bubble-size) / 2);
       width: var(--bubble-size);
       height: var(--bubble-size);
       --bubble-size: clamp(1px, calc(${isMobile ? '50vw - 56px' : '25vw - 28px'}), 230px);
@@ -86,16 +85,12 @@
       --bubble-opacity: ${opacity};
       animation: bubbleFloat ${duration.toFixed(1)}s linear forwards;
     `;
-    if (initialPhase > 0) {
-      bubble.style.animationDelay = `-${(duration * initialPhase).toFixed(2)}s`;
-    }
-
     if (useRealImages) {
       const img = document.createElement('img');
       img.src = imageSrc;
       img.alt = '';
       img.loading = 'eager';
-      img.fetchPriority = initialPhase > 0 ? 'high' : 'auto';
+      img.fetchPriority = bubbleIndex < COLUMN_COUNT ? 'high' : 'auto';
       img.decoding = 'async';
       img.onerror = () => {
         img.remove();
@@ -111,12 +106,11 @@
     swayWrapper.appendChild(bubble);
     container.appendChild(swayWrapper);
 
-    const timeUntilNextBubble = Math.max(0, NEXT_BUBBLE_PHASE - initialPhase) * duration * 1000;
     setTimeout(() => {
       if (nextImageIndex < imageSequence.length) {
-        createBubble(lane);
+        createBubble();
       }
-    }, timeUntilNextBubble);
+    }, duration * NEXT_BUBBLE_PHASE * 1000);
 
     bubble.addEventListener('animationend', () => {
       swayWrapper.remove();
@@ -132,9 +126,7 @@
       return;
     }
 
-    for (let lane = 0; lane < bubbleCount; lane += 1) {
-      createBubble(lane, initialPhases[lane]);
-    }
+    createBubble();
   }
 
   window.addEventListener('DOMContentLoaded', () => {

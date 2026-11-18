@@ -5,8 +5,8 @@
   const IMAGE_COUNT = 20;
   const IMAGE_DIR = 'images/bubbles/';
   const IMAGE_EXT = '.jpg';
-  const FLOAT_DURATION = 12;
-  const NEXT_BUBBLE_PHASE = 0.25;
+  const FLOAT_DURATION = 8;
+  const NEXT_BUBBLE_PHASE = 0.2;
   const MOBILE_SPEED_FACTOR = 0.55;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
@@ -26,7 +26,6 @@
   }
 
   let nextImageIndex = 0;
-  let activeBubbleCount = 0;
   const FALLBACK_GRADIENTS = [
     'linear-gradient(135deg, #667eea, #764ba2)',
     'linear-gradient(135deg, #f093fb, #f5576c)',
@@ -65,7 +64,7 @@
 
     const imageSrc = imageSequence[nextImageIndex];
     nextImageIndex += 1;
-    activeBubbleCount += 1;
+    const isLastBubble = nextImageIndex === imageSequence.length;
 
     const swayWrapper = document.createElement('div');
     swayWrapper.className = 'bubble-sway-wrapper';
@@ -121,9 +120,8 @@
 
     bubble.addEventListener('animationend', () => {
       swayWrapper.remove();
-      activeBubbleCount -= 1;
 
-      if (nextImageIndex === imageSequence.length && activeBubbleCount === 0) {
+      if (isLastBubble) {
         window.location.assign('letter.html');
       }
     });

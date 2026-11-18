@@ -2,6 +2,7 @@
   'use strict';
 
   const wishMessage = document.getElementById('wish-message');
+  const wishPanel = document.querySelector('.wish-panel');
   const pageLayout = document.querySelector('.page-layout');
   const message = wishMessage.textContent.trim();
   const characters = typeof Intl.Segmenter === 'function'
@@ -22,6 +23,8 @@
       letter.className = 'wish-letter';
       letter.textContent = character;
       wishMessage.appendChild(letter);
+      wishMessage.scrollTop = wishMessage.scrollHeight;
+      wishPanel.scrollTop = wishPanel.scrollHeight;
       requestAnimationFrame(() => letter.classList.add('is-visible'));
       await wait(24);
     }

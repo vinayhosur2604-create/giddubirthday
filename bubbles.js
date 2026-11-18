@@ -5,7 +5,8 @@
   const IMAGE_COUNT = 20;
   const IMAGE_DIR = 'images/bubbles/';
   const IMAGE_EXT = '.jpg';
-  const FLOAT_DURATION = 24;
+  const FLOAT_DURATION = 12;
+  const NEXT_BUBBLE_PHASE = 0.25;
   const MOBILE_SPEED_FACTOR = 0.55;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
@@ -111,12 +112,12 @@
     swayWrapper.appendChild(bubble);
     container.appendChild(swayWrapper);
 
-    const timeUntilMidpoint = Math.max(0, 0.5 - initialPhase) * duration * 1000;
+    const timeUntilNextBubble = Math.max(0, NEXT_BUBBLE_PHASE - initialPhase) * duration * 1000;
     setTimeout(() => {
       if (nextImageIndex < imageSequence.length) {
         createBubble(lane);
       }
-    }, timeUntilMidpoint);
+    }, timeUntilNextBubble);
 
     bubble.addEventListener('animationend', () => {
       swayWrapper.remove();

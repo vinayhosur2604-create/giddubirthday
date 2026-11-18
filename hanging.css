@@ -51,6 +51,12 @@ body {
   min-height: 100svh;
   margin: 0 auto;
   padding: 38px clamp(24px, 5vw, 64px) 86px;
+  transition: opacity 200ms ease;
+}
+
+.page-layout--vanishing {
+  opacity: 0;
+  pointer-events: none;
 }
 
 .hanging-photos {
@@ -189,17 +195,6 @@ body {
   display: none;
 }
 
-.wish-panel--vanishing {
-  animation: wishVanish 260ms steps(2, end) forwards;
-}
-
-@keyframes wishVanish {
-  to {
-    opacity: 0;
-    transform: scale(0.98);
-  }
-}
-
 .continue-link {
   position: absolute;
   right: clamp(24px, 5vw, 64px);
@@ -258,20 +253,21 @@ body {
   }
 
   .page-layout {
-    grid-template-columns: 1fr;
-    gap: 34px;
-    padding: 28px 20px 96px;
+    grid-template-columns: minmax(64px, 0.32fr) minmax(0, 0.68fr);
+    align-items: center;
+    gap: clamp(10px, 3vw, 16px);
+    padding: 20px 14px 78px;
   }
 
   .hanging-photos {
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     justify-content: center;
-    gap: 12px;
+    gap: 6px;
   }
 
   .photo-drop {
-    width: min(36vw, 150px);
+    width: min(20vw, 82px);
   }
 
   .photo-drop--first {
@@ -295,11 +291,21 @@ body {
   }
 
   .wish-panel {
-    padding: 28px 22px;
+    max-height: calc(100svh - 110px);
+    overflow-y: auto;
+    padding: 18px 12px;
+  }
+
+  .wish-panel h1 {
+    font-size: clamp(1.3rem, 5.5vw, 1.9rem);
   }
 
   .wish-message {
-    min-height: 220px;
+    min-height: 0;
+    max-height: 32svh;
+    overflow-y: auto;
+    font-size: 0.95rem;
+    line-height: 1.5;
   }
 
   .continue-link {
@@ -310,6 +316,10 @@ body {
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .page-layout {
+    transition: none;
+  }
+
   .photo-drop,
   .photo-sway {
     animation: none;

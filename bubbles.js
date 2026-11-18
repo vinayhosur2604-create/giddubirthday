@@ -6,7 +6,7 @@
   const IMAGE_DIR = 'images/bubbles/';
   const IMAGE_EXT = '.jpg';
   const FLOAT_DURATION = 24;
-  const MOBILE_SPEED_FACTOR = 0.6;
+  const MOBILE_SPEED_FACTOR = 0.55;
   const MIN_OPACITY = 0.55;
   const MAX_OPACITY = 0.9;
   const container = document.getElementById('bubbles-container');
@@ -94,7 +94,8 @@
       const img = document.createElement('img');
       img.src = imageSrc;
       img.alt = '';
-      img.loading = 'lazy';
+      img.loading = 'eager';
+      img.fetchPriority = initialPhase > 0 ? 'high' : 'auto';
       img.decoding = 'async';
       img.onerror = () => {
         img.remove();

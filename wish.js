@@ -26,7 +26,7 @@
       wishMessage.scrollTop = wishMessage.scrollHeight;
       wishPanel.scrollTop = wishPanel.scrollHeight;
       requestAnimationFrame(() => letter.classList.add('is-visible'));
-      await wait(24);
+      await wait(50);
     }
 
     pageLayout.classList.add('page-layout--vanishing');
